@@ -7,10 +7,9 @@ apiRoutes.get('/api/friends', function(req, res) {
 });
 
 apiRoutes.post('/api/friends', function(req, res) {
-  let userTotalScore = req.body.scores.reduce(getSum); // variable holding sum of user scores
-  // function taking usersore as arguement that will generate match
-  res.json(friends[generateMatch(userTotalScore)])
-  // res.json(friends[generateMatch(userTotalScore)]);
+  let userTotalScore = req.body.scores.reduce(getSum); // sum of user inputted scores
+  res.json(friends[generateMatch(userTotalScore)])   // function taking userscore as arguement that will return index of closest match
+  friends.push(req.body);
 });
 
 function generateMatch(userTotalScore) {
@@ -19,23 +18,25 @@ function generateMatch(userTotalScore) {
   for (i=0; i<friends.length; i++) {
     friendsTotalScore.push(friends[i].scores.reduce(getSum));
   }
+  // populates an array of total differences between user total and friend totals
   let totalDifferences = [];
-
   for (x=0; x<friendsTotalScore.length; x++) {
     totalDifferences.push(Math.abs(friendsTotalScore[x] - userTotalScore));
   }
 
-  let index = totalDifferences.indexOf(Math.min.apply(null, totalDifferences)) // returns the index of the smallest number in the array
+  // sets variable index to the index of the smallest number in the array
+  let index = totalDifferences.indexOf(Math.min.apply(null, totalDifferences))
 
+  //console.log tests
   console.log(`userTotalScore: ${userTotalScore}`);
   console.log(`friends total score: ${friendsTotalScore}`);
   console.log(`total difference: ${totalDifferences}`);
   console.log(`index: ${index}`)
 
   return index;
-
 }
 
+//reduce function for total sum of arrays
 function getSum(total, num) {
   return total + num;
 }
